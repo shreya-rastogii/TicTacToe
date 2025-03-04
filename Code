@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+//2d array to represent tic tac toe matrix
+char matrix[3][3];
+
+char checkBoard(void);
+void init_matrix(void);
+void playerTurn(void);
+void computerTurn(void);
+void displayBoard(void);
+
+int main(void)
+{
+  char done;
+
+  printf("Welcome to Tic Tac Toe Game.\n");
+  done =  ' ';
+  init_matrix();
+
+  do {
+    displayBoard();
+    playerTurn();
+    //after player turn check if player is winner
+    done = checkBoard();
+    //if player is winner end the loop
+    if(done!= ' ') break;
+
+    //if loop is not ended which means game is still on
+    //let computer take a turn
+    computerTurn();
+    //after computer turn check if computer is winner
+    done = checkBoard();
+  } while(done== ' ');
+
+  if(done=='X') printf("Congratulations! You won\n");
+  else printf("Better luck next time! You loose\n");
+  displayBoard(); /* show final positions */
+
+  return 0;
+}
+
+// Initialize the 2d matrix
+void init_matrix(void)
+{
+  int i, j;
+
+  for(i=0; i<3; i++)
+    for(j=0; j<3; j++) matrix[i][j] =  ' ';
+}
+
+//This function executes on player turn
+void playerTurn(void)
+{
+  int x, y;
+
+  printf("Enter X,Y coordinates for your move: ");
+  scanf("%d%*c%d", &x, &y);
+
+  x--; y--;
+
+  if(matrix[x][y]!= ' '){
+    printf("Invalid move, Valid values (1 to 3)\n");
+    playerTurn();
+  }
+  else matrix[x][y] = 'X';
+}
+
+//This function executes on computer turn
+void computerTurn(void)
+{
+  int i, j;
+  for(i=0; i<3; i++){
+    for(j=0; j<3; j++)
+      if(matrix[i][j]==' ') break;
+    if(matrix[i][j]==' ') break;
+  }
+
+  if(i*j==9)  {
+    printf("Draw! No one won.\n");
+    exit(0);
+  }
+  else
+    matrix[i][j] = 'O';
+}
+
+//Display tic tac toe board
+void displayBoard(void)
+{
+  int t;
+
+  for(t=0; t<3; t++) {
+    printf(" %c | %c | %c ",matrix[t][0],
+            matrix[t][1], matrix [t][2]);
+    if(t!=2) printf("\n---|---|---\n");
+  }
+  printf("\n");
+}
+
+//This checks the board whether a line is completed
+char checkBoard(void)
+{
+  int i;
+
+  //check rows in the tic tac toe board
+  for(i=0; i<3; i++)
+    if(matrix[i][0]==matrix[i][1] && matrix[i][0]==matrix[i][2])
+       return matrix[i][0];
+
+  //check columns in the tic tac toe board
+  for(i=0; i<3; i++)
+    if(matrix[0][i]==matrix[1][i] && matrix[0][i]==matrix[2][i])
+       return matrix[0][i];
+
+  //check board diagonals
+  if(matrix[0][0]==matrix[1][1] && matrix[1][1]==matrix[2][2])
+       return matrix[0][0];
+
+  if(matrix[0][2]==matrix[1][1] && matrix[1][1]==matrix[2][0])
+       return matrix[0][2];
+
+  return ' ';
+}
